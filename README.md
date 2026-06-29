@@ -1,139 +1,257 @@
 # Distributed E-Commerce Architecture
 
-A scalable, cloud-native backend for e-commerce applications built with modern microservices architecture. This platform features modular services for authentication, product management, and order processing, secured with JWT authentication and designed for distributed deployments.
+Cloud-native e-commerce backend built with **Spring Boot microservices**, **Spring Cloud Gateway**, **Netflix Eureka**, **Kafka**, **JWT authentication**, **MySQL**, and **Docker**.
 
-## 🏗️ Architecture Overview
+This project demonstrates a distributed backend architecture for common e-commerce workflows such as authentication, user management, product catalog management, cart handling, order processing, service discovery, and API gateway routing.
 
-This project implements a comprehensive microservices architecture using Spring Boot, featuring:
+## Project Goal
 
-- **Service Discovery**: Netflix Eureka for service registration and discovery
-- **API Gateway**: Centralized routing and load balancing
-- **Message Streaming**: Apache Kafka for event-driven communication
-- **Security**: JWT-based authentication and authorization
-- **Containerization**: Docker support for easy deployment
-- **Database**: MySQL with JPA/Hibernate for data persistence
+The goal of this project is to show how a modular e-commerce backend can be split into independent services that communicate through API routing and event-driven workflows.
 
-## 🚀 Services
+It focuses on:
 
-### Core Services
+* Microservice separation
+* Service discovery
+* API gateway routing
+* JWT-based authentication
+* MySQL-backed persistence
+* Kafka-based async communication
+* Docker-based local deployment
+* Scalable backend design patterns
 
-| Service | Port | Description |
-|---------|------|-------------|
-| **Discovery Service** | 8761 | Netflix Eureka server for service registration |
-| **Gateway Service** | 8080 | API Gateway with routing and load balancing |
-| **Config Server** | 8888 | Centralized configuration management |
-| **Auth Service** | 8081 | JWT-based authentication and user management |
-| **User Service** | 8082 | User profile and account management |
-| **Product Service** | 8083 | Product catalog and inventory management |
-| **Cart Service** | 8084 | Shopping cart functionality |
-| **Order Service** | 8085 | Order processing and management |
-| **Orchestration Service** | 8086 | Business logic orchestration and workflow |
+## Architecture Overview
 
-## 🛠️ Technology Stack
+The system uses a gateway-first architecture where external clients communicate through a central API Gateway. Services register with Eureka for discovery, while business services handle separate parts of the e-commerce workflow.
 
-- **Framework**: Spring Boot 2.x
-- **Service Discovery**: Netflix Eureka
-- **API Gateway**: Spring Cloud Gateway
-- **Security**: Spring Security with JWT
-- **Database**: MySQL with JPA/Hibernate
-- **Message Queue**: Apache Kafka
-- **Containerization**: Docker & Docker Compose
-- **Build Tool**: Maven
-- **CI/CD**: Jenkins
-- **Cloud Storage**: AWS S3
+### Main Flow
 
-## 📋 Prerequisites
+```text
+Client / API Consumer
+        |
+        v
+Spring Cloud Gateway
+        |
+        v
+Netflix Eureka Service Discovery
+        |
+        v
+Microservices
+        |
+        v
+MySQL / Kafka
+```
 
-- Java 8 or higher
-- Maven 3.6+
-- MySQL 8.0+
-- Docker & Docker Compose
-- Apache Kafka (optional, for event streaming)
+## Services
 
-## 🚀 Quick Start
+| Service               | Port | Description                                          |
+| --------------------- | ---: | ---------------------------------------------------- |
+| Discovery Service     | 8761 | Eureka server for service registration and discovery |
+| Config Server         | 8888 | Centralized configuration management                 |
+| Gateway Service       | 8080 | API Gateway for routing external requests            |
+| Auth Service          | 8081 | JWT-based authentication and authorization           |
+| User Service          | 8082 | User profile and account management                  |
+| Product Service       | 8083 | Product catalog and inventory management             |
+| Cart Service          | 8084 | Shopping cart workflows                              |
+| Order Service         | 8085 | Order processing and order status management         |
+| Orchestration Service | 8086 | Coordinates business workflows across services       |
 
-### 1. Clone the Repository
+## Key Features
+
+* **Microservice Architecture:** Separate services for auth, users, products, cart, orders, orchestration, gateway, config, and discovery
+* **Service Discovery:** Netflix Eureka for service registration and lookup
+* **API Gateway:** Centralized routing through Spring Cloud Gateway
+* **Authentication:** JWT-based login and protected routes
+* **Event-Driven Communication:** Kafka support for async workflows
+* **Database Persistence:** MySQL with JPA/Hibernate
+* **Containerization:** Docker and Docker Compose support
+* **Centralized Configuration:** Config Server for shared service configuration
+* **Health Monitoring:** Spring Boot Actuator health endpoints
+* **Local Development Workflow:** Maven-based build and service startup commands
+
+## Backend Engineering Highlights
+
+* Designed service boundaries for common e-commerce workflows
+* Used API Gateway to centralize client-facing routing
+* Added service registration and discovery through Eureka
+* Integrated JWT authentication for protected backend routes
+* Used Kafka for asynchronous communication patterns
+* Structured services for independent development and deployment
+* Added Docker support for local infrastructure setup
+* Used MySQL and JPA/Hibernate for persistence
+
+## Technology Stack
+
+| Area              | Technologies           |
+| ----------------- | ---------------------- |
+| Language          | Java                   |
+| Framework         | Spring Boot 2.x        |
+| API Gateway       | Spring Cloud Gateway   |
+| Service Discovery | Netflix Eureka         |
+| Security          | Spring Security, JWT   |
+| Database          | MySQL, JPA/Hibernate   |
+| Messaging         | Apache Kafka           |
+| Configuration     | Spring Cloud Config    |
+| Containerization  | Docker, Docker Compose |
+| Build Tool        | Maven                  |
+| Monitoring        | Spring Boot Actuator   |
+| CI/CD             | Jenkins                |
+| Cloud Storage     | AWS S3                 |
+
+## Project Structure
+
+```text
+distributed-e-com-architecture/
+├── discovery-service/
+├── config-server/
+├── gateway-service/
+├── auth-ms/
+├── user-service/
+├── product-service/
+├── cart-service/
+├── order-service/
+├── orchestration-service/
+├── app-config/
+├── docker-compose.yml
+├── pom.xml
+└── README.md
+```
+
+## API Documentation
+
+### Authentication Endpoints
+
+| Method | Endpoint         | Description                      |
+| ------ | ---------------- | -------------------------------- |
+| `POST` | `/auth/register` | Register a new user              |
+| `POST` | `/auth/login`    | Authenticate user and return JWT |
+| `POST` | `/auth/refresh`  | Refresh JWT token                |
+
+### Product Endpoints
+
+| Method   | Endpoint         | Description            |
+| -------- | ---------------- | ---------------------- |
+| `GET`    | `/products`      | Retrieve all products  |
+| `GET`    | `/products/{id}` | Retrieve product by ID |
+| `POST`   | `/products`      | Create a new product   |
+| `PUT`    | `/products/{id}` | Update product         |
+| `DELETE` | `/products/{id}` | Delete product         |
+
+### Order Endpoints
+
+| Method | Endpoint              | Description            |
+| ------ | --------------------- | ---------------------- |
+| `GET`  | `/orders`             | Retrieve user orders   |
+| `POST` | `/orders`             | Create a new order     |
+| `GET`  | `/orders/{id}`        | Retrieve order details |
+| `PUT`  | `/orders/{id}/status` | Update order status    |
+
+## Authentication Flow
+
+The platform uses JWT-based authentication.
+
+1. User registers or logs in through the Auth Service.
+2. Auth Service validates credentials and returns a JWT.
+3. Client sends the JWT in the `Authorization` header.
+4. API Gateway and protected services validate the token before allowing access.
+
+```text
+Authorization: Bearer <token>
+```
+
+## Quick Start
+
+### Prerequisites
+
+* Java 8 or higher
+* Maven 3.6+
+* MySQL 8.0+
+* Docker and Docker Compose
+* Apache Kafka, if running event-streaming workflows locally
+
+### Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/arpitJ-dev/distributed-e-com-architecture.git
 cd distributed-e-com-architecture
 ```
 
-### 2. Start Infrastructure Services
+### Start Infrastructure Services
 
 ```bash
-# Start MySQL database
 docker-compose up -d mysql
-
-# Start Kafka (if using event streaming)
-docker-compose up -d kafka zookeeper
+docker-compose up -d zookeeper kafka
 ```
 
-### 3. Build and Run Services
+### Build All Services
 
 ```bash
-# Build all services
 mvn clean install
-
-# Start services in order
-# 1. Discovery Service
-cd discovery-service && mvn spring-boot:run
-
-# 2. Config Server
-cd config-server && mvn spring-boot:run
-
-# 3. Gateway Service
-cd gateway-service && mvn spring-boot:run
-
-# 4. Other services
-cd auth-ms && mvn spring-boot:run
-cd user-service && mvn spring-boot:run
-cd product-service && mvn spring-boot:run
-cd cart-service && mvn spring-boot:run
-cd order-service && mvn spring-boot:run
-cd orchestration-service && mvn spring-boot:run
 ```
 
-### 4. Access the Application
+### Start Services Locally
 
-- **API Gateway**: http://localhost:8080
-- **Eureka Dashboard**: http://localhost:8761
-- **Config Server**: http://localhost:8888
-
-## 🔐 Authentication
-
-The platform uses JWT-based authentication:
-
-1. **Register/Login**: POST to `/auth/register` or `/auth/login`
-2. **Get Token**: Include JWT token in Authorization header
-3. **Access Protected Resources**: Use `Bearer <token>` format
-
-## 📊 API Documentation
-
-### Authentication Endpoints
-- `POST /auth/register` - User registration
-- `POST /auth/login` - User login
-- `POST /auth/refresh` - Refresh JWT token
-
-### Product Management
-- `GET /products` - Get all products
-- `GET /products/{id}` - Get product by ID
-- `POST /products` - Create new product (Admin only)
-- `PUT /products/{id}` - Update product (Admin only)
-- `DELETE /products/{id}` - Delete product (Admin only)
-
-### Order Management
-- `GET /orders` - Get user orders
-- `POST /orders` - Create new order
-- `GET /orders/{id}` - Get order details
-- `PUT /orders/{id}/status` - Update order status (Admin only)
-
-## 🐳 Docker Deployment
-
-### Build Docker Images
+Start services in this order:
 
 ```bash
-# Build all services
+cd discovery-service
+mvn spring-boot:run
+```
+
+```bash
+cd config-server
+mvn spring-boot:run
+```
+
+```bash
+cd gateway-service
+mvn spring-boot:run
+```
+
+Then start the business services:
+
+```bash
+cd auth-ms
+mvn spring-boot:run
+```
+
+```bash
+cd user-service
+mvn spring-boot:run
+```
+
+```bash
+cd product-service
+mvn spring-boot:run
+```
+
+```bash
+cd cart-service
+mvn spring-boot:run
+```
+
+```bash
+cd order-service
+mvn spring-boot:run
+```
+
+```bash
+cd orchestration-service
+mvn spring-boot:run
+```
+
+## Access Points
+
+| Service          | URL                     |
+| ---------------- | ----------------------- |
+| API Gateway      | `http://localhost:8080` |
+| Eureka Dashboard | `http://localhost:8761` |
+| Config Server    | `http://localhost:8888` |
+
+## Docker Deployment
+
+Build Docker images for individual services:
+
+```bash
 docker build -t auth-service ./auth-ms
 docker build -t user-service ./user-service
 docker build -t product-service ./product-service
@@ -145,74 +263,127 @@ docker build -t discovery-service ./discovery-service
 docker build -t config-server ./config-server
 ```
 
-### Run with Docker Compose
+Run the system with Docker Compose:
 
 ```bash
 docker-compose up -d
 ```
 
-## 🔧 Configuration
+## Configuration
 
-Configuration is managed through the Config Server. Key properties can be found in:
+Configuration is managed through the Config Server.
 
-- `app-config/application.properties` - Global configuration
-- Individual service `application.properties` - Service-specific settings
+Common configuration locations:
+
+* `app-config/application.properties`
+* Service-specific `application.properties` files
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DB_HOST` | MySQL host | localhost |
-| `DB_PORT` | MySQL port | 3306 |
-| `DB_NAME` | Database name | ecommerce_db |
-| `JWT_SECRET` | JWT signing secret | your-secret-key |
-| `KAFKA_BOOTSTRAP_SERVERS` | Kafka servers | localhost:9092 |
+| Variable                  | Description        | Default           |
+| ------------------------- | ------------------ | ----------------- |
+| `DB_HOST`                 | MySQL host         | `localhost`       |
+| `DB_PORT`                 | MySQL port         | `3306`            |
+| `DB_NAME`                 | Database name      | `ecommerce_db`    |
+| `JWT_SECRET`              | JWT signing secret | `your-secret-key` |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker URL   | `localhost:9092`  |
 
-## 🧪 Testing
+## Testing
+
+Run tests for all services:
 
 ```bash
-# Run tests for all services
 mvn test
-
-# Run tests for specific service
-cd <service-name> && mvn test
 ```
 
-## 📈 Monitoring & Logging
+Run tests for a specific service:
 
-- **Service Health**: Each service exposes health endpoints at `/actuator/health`
-- **Metrics**: Spring Boot Actuator provides application metrics
-- **Logging**: Structured logging with SLF4J and Logback
+```bash
+cd <service-folder>
+mvn test
+```
 
-## 🤝 Contributing
+## Monitoring and Logging
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+The services use Spring Boot Actuator and standard Spring logging.
 
-## 📄 License
+Useful monitoring points:
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+* Service health: `/actuator/health`
+* Eureka service registration dashboard
+* Gateway routing behavior
+* Kafka broker activity
+* MySQL service connectivity
+* Service logs through console or container logs
 
-## 🏆 Features
+## Use Cases
 
-- ✅ Microservices Architecture
-- ✅ Service Discovery & Load Balancing
-- ✅ JWT Authentication & Authorization
-- ✅ API Gateway with Routing
-- ✅ Event-Driven Communication
-- ✅ Docker Containerization
-- ✅ Database Integration
-- ✅ RESTful APIs
-- ✅ Centralized Configuration
-- ✅ Scalable Design
+This project can be used as a reference for:
 
-## 📞 Support
+* Microservice-based backend design
+* E-commerce service decomposition
+* API gateway routing
+* Service discovery using Eureka
+* JWT-secured backend APIs
+* Kafka-based async communication
+* Docker-based local distributed systems setup
 
-For support and questions, please open an issue in the GitHub repository.
+## Future Work
+
+Planned improvements may include:
+
+* Add OpenAPI/Swagger documentation
+* Add automated integration tests across services
+* Add GitHub Actions pipeline for build and test
+* Add centralized logging with ELK or OpenSearch
+* Add distributed tracing with Zipkin or Jaeger
+* Add Kubernetes manifests
+* Add load testing results for gateway and service latency
+* Add clearer database schema documentation
+
+## Troubleshooting
+
+### Build Issues
+
+```bash
+mvn clean install
+```
+
+If build fails:
+
+* Check Java version.
+* Check Maven version.
+* Confirm dependencies are available.
+* Build individual services to isolate the issue.
+
+### Service Discovery Issues
+
+If services do not appear in Eureka:
+
+* Confirm `discovery-service` is running on port `8761`.
+* Confirm service configuration points to the correct Eureka URL.
+* Restart the affected service after Eureka is available.
+
+### Database Issues
+
+If a service cannot connect to MySQL:
+
+* Confirm MySQL container is running.
+* Check `DB_HOST`, `DB_PORT`, and `DB_NAME`.
+* Verify credentials in service configuration.
+
+### Kafka Issues
+
+If event workflows fail:
+
+* Confirm Zookeeper and Kafka are running.
+* Check `KAFKA_BOOTSTRAP_SERVERS`.
+* Review service logs for producer or consumer errors.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
-**Built with ❤️ using Spring Boot and modern microservices patterns**
+Built with Spring Boot, Spring Cloud, Kafka, MySQL, Docker, and microservice architecture patterns.
